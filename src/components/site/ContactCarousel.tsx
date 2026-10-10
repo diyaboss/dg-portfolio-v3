@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Decode } from "@/components/ui/Decode";
 import { audio } from "@/lib/audio";
 import { live, useReveal } from "@/lib/store";
@@ -23,6 +23,19 @@ export function ContactCarousel({ links }: { links: SocialLink[] }) {
     live.contact.morph = 0;
     audio.blip("click");
   };
+
+  // Arrow keys switch destinations while the contact scene is active.
+  useEffect(() => {
+    if (!on || count < 2) return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && /INPUT|TEXTAREA/.test(t.tagName)) return;
+      if (e.key === "ArrowRight") go(1);
+      else if (e.key === "ArrowLeft") go(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const current = links[index];
   const prev = links[(index - 1 + count) % count];
@@ -55,9 +68,9 @@ export function ContactCarousel({ links }: { links: SocialLink[] }) {
 
       <div className={styles.rail}>
         {count > 1 ? (
-          <span className={styles.ghost} aria-hidden="true">
+          <button type="button" className={styles.ghost} onClick={() => go(-1)} tabIndex={-1} aria-hidden="true">
             {prev.label}
-          </span>
+          </button>
         ) : null}
         <a
           className={`bracket hud-text ${styles.current}`}
@@ -69,9 +82,9 @@ export function ContactCarousel({ links }: { links: SocialLink[] }) {
           <Decode key={current.id} text={current.label} active={on} speed={50} />
         </a>
         {count > 1 ? (
-          <span className={styles.ghost} aria-hidden="true">
+          <button type="button" className={styles.ghost} onClick={() => go(1)} tabIndex={-1} aria-hidden="true">
             {next.label}
-          </span>
+          </button>
         ) : null}
       </div>
 

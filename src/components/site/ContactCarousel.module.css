@@ -48,11 +48,20 @@
 }
 
 .ghost {
+  background: none;
+  border: 0;
+  padding: 0.9em 0;
+  font: inherit;
+  cursor: pointer;
   color: var(--color-bone);
-  opacity: 0.28;
+  opacity: 0.32;
+  transition: opacity 0.3s;
   white-space: nowrap;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 70%);
   mask-image: linear-gradient(to right, transparent, #000 70%);
+}
+.ghost:hover {
+  opacity: 0.75;
 }
 .ghost:last-child {
   text-align: left;
@@ -67,25 +76,30 @@
   display: block;
   position: absolute;
   top: 50%;
-  width: 72px;
-  height: 44px;
-  margin-top: -22px;
+  width: 120px;
+  height: 88px;
+  margin-top: -44px;
   background: none;
   border: 0;
   color: var(--color-bone);
   cursor: pointer;
 }
 .left {
-  left: calc(50% - min(330px, 38vw));
+  left: calc(50% - min(354px, 42vw));
 }
 .right {
-  right: calc(50% - min(330px, 38vw));
+  right: calc(50% - min(354px, 42vw));
+}
+:global(.webgl-on) .arrow:hover,
+:global(.webgl-on) .arrow:focus-visible {
+  outline: none;
+  color: var(--color-ember-hot);
 }
 
 .arrowLine {
   position: absolute;
-  left: 8px;
-  right: 8px;
+  left: 32px;
+  right: 32px;
   top: 50%;
   height: 1px;
   background: currentColor;
@@ -122,9 +136,9 @@
 
 @media (max-width: 640px) {
   .left {
-    left: 4vw;
+    left: 0;
   }
   .right {
-    right: 4vw;
+    right: 0;
   }
 }
