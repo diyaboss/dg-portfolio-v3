@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DG Portfolio V3
 
-## Getting Started
+Diya Gupta's portfolio — a scroll-driven WebGL experience (Next.js 16, React 19, Three.js / React Three Fiber, GSAP, custom GLSL).
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Append `?nowebgl` to any URL to preview the accessible no-WebGL fallback.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/content/            ← all copy and data (see CONTENT_GUIDE.md)
+src/app/                ← routes: / and /projects/[slug] (statically generated), 404
+src/components/site/    ← DOM layer: HUD, project callouts, overlay, carousel, chrome
+src/components/ui/      ← Decode (character-shift text reveal), Reveal
+src/components/experience/
+  Scene.tsx             ← Canvas, intro timeline, shader pre-compilation
+  CameraRig.tsx         ← applies choreography.ts to the camera, publishes FX intensities
+  choreography.ts       ← pure camera poses per scene (enter / scroll / exit)
+  PostFX.tsx            ← bloom + chroma, radial blur, fog-cut wipe, grade, grain
+  intro/ work/ about/ contact/  ← the four scenes
+src/lib/                ← store (live + UI state), scroll driver, audio synth, noise
+src/shaders/chunks.ts   ← shared GLSL (palette, fog, texture noise)
+```
 
-## Learn More
+### How it fits together
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The root layout mounts one persistent canvas plus the semantic page (`HomeSections`). Project routes render only an overlay, so the scene never reloads.
+- `lib/driver.ts` turns native scroll into smoothed per-section progress. The page scrolls normally, so keyboard, touch and assistive tech work as usual.
+- Scenes live at separate world origins. Moving between them happens under a full-screen fog wipe, the same cut technique as the reference.
+- All HUD text is real DOM. `Decode` animates a visual copy while the real text stays available to screen readers.
+- Sound is synthesised with Web Audio. It's off by default and starts only from the Sound toggle.
+- Quality adapts at runtime: the pixel ratio steps down when frames get slow. Constrained devices get lighter geometry, and `prefers-reduced-motion` disables the intro flight, decode and transition effects.

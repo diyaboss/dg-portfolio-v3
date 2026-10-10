@@ -1,0 +1,130 @@
+/* Fallback: plain list. */
+.arrow,
+.rail {
+  display: none;
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+
+:global(.webgl-on) .list {
+  display: none;
+}
+
+:global(.webgl-on) .root {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out-expo);
+}
+:global(.webgl-on) .root[data-on="true"] {
+  opacity: 1;
+}
+:global(.webgl-on) .root[data-on="false"] * {
+  pointer-events: none !important;
+}
+
+:global(.webgl-on) .rail {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--hud-pad) + 12px);
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.4rem;
+  width: min(520px, 92vw);
+}
+
+.current {
+  min-width: 10.5em;
+  font-weight: 500;
+  font-size: 13.5px;
+}
+
+.ghost {
+  color: var(--color-bone);
+  opacity: 0.28;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 70%);
+  mask-image: linear-gradient(to right, transparent, #000 70%);
+}
+.ghost:last-child {
+  text-align: left;
+  -webkit-mask-image: linear-gradient(to left, transparent, #000 70%);
+  mask-image: linear-gradient(to left, transparent, #000 70%);
+}
+.ghost:first-child {
+  text-align: right;
+}
+
+:global(.webgl-on) .arrow {
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 72px;
+  height: 44px;
+  margin-top: -22px;
+  background: none;
+  border: 0;
+  color: var(--color-bone);
+  cursor: pointer;
+}
+.left {
+  left: calc(50% - min(330px, 38vw));
+}
+.right {
+  right: calc(50% - min(330px, 38vw));
+}
+
+.arrowLine {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.arrowLine::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 9px;
+  height: 1px;
+  background: currentColor;
+}
+.left .arrowLine::after {
+  left: 0;
+  transform-origin: left center;
+  transform: rotate(-30deg);
+  top: 0;
+}
+.right .arrowLine::after {
+  right: 0;
+  transform-origin: right center;
+  transform: rotate(30deg);
+  top: 0;
+}
+.left:hover .arrowLine,
+.left:focus-visible .arrowLine {
+  transform: translateX(-6px);
+}
+.right:hover .arrowLine,
+.right:focus-visible .arrowLine {
+  transform: translateX(6px);
+}
+
+@media (max-width: 640px) {
+  .left {
+    left: 4vw;
+  }
+  .right {
+    right: 4vw;
+  }
+}

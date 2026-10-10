@@ -1,0 +1,59 @@
+.row {
+  list-style: none;
+  transition: opacity 0.4s;
+}
+
+.label {
+  display: flex;
+  gap: 0.8em;
+  align-items: baseline;
+  font-weight: 500;
+}
+:global(.webgl-on) .label {
+  justify-content: flex-end;
+}
+
+.ring {
+  color: var(--color-ember);
+  font-size: 0.85em;
+}
+
+.skills {
+  margin: 0.25em 0 0;
+  padding: 0;
+  color: var(--color-bone-dim);
+}
+
+.skill {
+  list-style: none;
+  display: inline;
+}
+.skill:not(:last-child)::after {
+  content: " / ";
+  color: var(--color-ash);
+}
+
+.evidence {
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--color-ember-hot);
+  padding: 0 0.15em;
+  border: 1px solid transparent;
+}
+.evidence:hover,
+.evidence:focus-visible {
+  border-color: currentColor;
+}
+
+:global(.webgl-on) .row:hover .skills,
+:global(.webgl-on) .row:focus-within .skills {
+  color: var(--color-bone);
+}
+
+@media (max-width: 760px) {
+  :global(.webgl-on) .label {
+    justify-content: flex-start;
+  }
+}

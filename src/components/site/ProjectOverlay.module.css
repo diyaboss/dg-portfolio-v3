@@ -1,0 +1,117 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 40%, rgb(29 11 12 / 0.55), rgb(10 3 3 / 0.92) 70%),
+    rgb(10 3 3 / 0.5);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out-expo);
+}
+
+.ghostTitle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1.08);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(64px, 16vw, 260px);
+  line-height: 0.9;
+  text-align: center;
+  letter-spacing: -0.03em;
+  color: var(--color-wine);
+  filter: blur(22px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition:
+    opacity 1.4s var(--ease-out-expo),
+    transform 2.2s var(--ease-out-expo);
+}
+
+.overlay .close {
+  position: fixed;
+  right: var(--hud-pad);
+  top: calc(var(--hud-pad) - 10px);
+  z-index: 2;
+  background: none;
+  border: 0;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--hud-pad) + 110px), #000 85%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--hud-pad) + 110px), #000 85%, transparent);
+}
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller [data-stagger] {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo),
+    filter 0.8s var(--ease-out-expo);
+}
+
+/* Open. */
+.overlay[data-phase="open"] .backdrop,
+.overlay[data-phase="open"] .close {
+  opacity: 1;
+}
+.overlay[data-phase="open"] .ghostTitle {
+  opacity: 0.55;
+  transform: translate(-50%, -50%) scale(1);
+}
+.overlay[data-phase="open"] [data-stagger] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Exit. */
+.overlay[data-phase="exit"] .backdrop {
+  opacity: 0;
+  transition-duration: 0.45s;
+}
+.overlay[data-phase="exit"] .ghostTitle,
+.overlay[data-phase="exit"] .close {
+  opacity: 0;
+  transition-duration: 0.3s;
+}
+.overlay[data-phase="exit"] [data-stagger] {
+  opacity: 0;
+  transition-duration: 0.3s;
+  transition-delay: 0ms !important;
+}
+
+/* Without JavaScript the phase never advances: show everything. */
+:global(.no-js) .backdrop,
+:global(.no-js) .close,
+:global(.no-js) .scroller [data-stagger] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Without WebGL there is no scene behind; make the layer fully opaque. */
+:global(html:not(.webgl-on)) .backdrop {
+  background: var(--color-ink);
+}

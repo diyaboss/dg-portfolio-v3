@@ -1,0 +1,173 @@
+/* ---- Fallback (no WebGL / no JS): a readable list --------------------- */
+.item {
+  list-style: none;
+}
+
+.anchor {
+  display: block;
+  color: var(--color-bone);
+}
+
+.title,
+.meta,
+.cta {
+  display: none;
+}
+
+.fallback {
+  display: grid;
+  grid-template-columns: 3ch 1fr;
+  gap: 0.2rem 1.2rem;
+  padding: 1.4rem 0;
+  border-top: 1px solid rgb(242 236 233 / 0.14);
+}
+.fbIndex {
+  grid-row: span 3;
+  color: var(--color-ember);
+}
+.fbTitle {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.fbMeta {
+  color: var(--color-bone-dim);
+}
+.fbSummary {
+  color: var(--color-bone-dim);
+  max-width: 60ch;
+}
+.anchor:hover .fbTitle,
+.anchor:focus-visible .fbTitle {
+  color: var(--color-ember-hot);
+}
+
+/* ---- WebGL mode: callout pinned to the crystal -------------------------- */
+:global(.webgl-on) .fallback {
+  display: none;
+}
+
+:global(.webgl-on) .anchor {
+  --x: -9999px;
+  --y: -9999px;
+  --r: 140px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
+  transform: translate3d(calc(var(--x) - var(--r)), calc(var(--y) - var(--r)), 0);
+  z-index: 5;
+  pointer-events: none;
+  font-size: var(--hud-size);
+  line-height: 1.35;
+  text-shadow: 0 0 14px rgb(242 236 233 / 0.3);
+  cursor: pointer;
+}
+:global(.webgl-on) .anchor[data-on="true"] {
+  pointer-events: auto;
+}
+:global(.webgl-on) .anchor[data-on="false"] {
+  pointer-events: none !important;
+}
+:global(.webgl-on) .anchor .leader,
+:global(.webgl-on) .anchor .underline {
+  opacity: 0;
+  transition:
+    opacity 0.5s,
+    transform 0.6s var(--ease-out-expo);
+}
+:global(.webgl-on) .anchor[data-on="true"] .leader,
+:global(.webgl-on) .anchor[data-on="true"] .underline {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+:global(.webgl-on) .anchor:focus-visible {
+  outline: none;
+}
+:global(.webgl-on) .anchor:focus-visible .underline,
+:global(.webgl-on) .anchor:hover .underline {
+  transform: scaleX(1);
+}
+
+:global(.webgl-on) .title,
+:global(.webgl-on) .meta,
+:global(.webgl-on) .cta {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+/* Upper-left: code + name with a leader line down to the crystal. */
+:global(.webgl-on) .title {
+  right: 92%;
+  bottom: 86%;
+  align-items: flex-start;
+  padding-bottom: 6px;
+  font-weight: 500;
+}
+.code {
+  color: var(--color-bone);
+}
+.leader {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgb(242 236 233 / 0.75);
+}
+.leader::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(var(--r) * 0.5);
+  height: 1px;
+  background: rgb(242 236 233 / 0.75);
+  transform: translateX(100%) rotate(42deg);
+  transform-origin: left center;
+}
+
+/* Right: telemetry. */
+:global(.webgl-on) .meta {
+  left: 86%;
+  top: 22%;
+  gap: 1px;
+}
+
+/* Lower-right: date + call to action. */
+:global(.webgl-on) .cta {
+  left: 64%;
+  top: 78%;
+  align-items: flex-end;
+  padding-bottom: 6px;
+}
+.underline {
+  position: absolute;
+  left: -40%;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgb(242 236 233 / 0.6);
+  transform: scaleX(0.35);
+  transform-origin: right;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+@media (max-width: 640px) {
+  :global(.webgl-on) .title {
+    right: 50%;
+    bottom: 96%;
+  }
+  :global(.webgl-on) .meta {
+    display: none;
+  }
+  :global(.webgl-on) .cta {
+    left: auto;
+    right: 6%;
+    top: 96%;
+  }
+}

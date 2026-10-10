@@ -1,0 +1,230 @@
+.main {
+  position: relative;
+  z-index: 2;
+  outline: none;
+}
+
+/* ---- Fallback flow (no WebGL): a readable, linear page ------------------ */
+.track {
+  position: relative;
+  padding: 0 var(--hud-pad);
+}
+
+.screen {
+  position: relative;
+  padding: calc(var(--hud-pad) * 3) 0 calc(var(--hud-pad) * 2);
+  max-width: 1100px;
+}
+
+.label {
+  font-weight: 500;
+  color: var(--color-bone);
+  margin-bottom: 0.9em;
+}
+
+.gap {
+  margin-top: 1.1em;
+}
+
+.intro .screen {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.brief p {
+  max-width: 36ch;
+}
+
+.status,
+.scrollHint {
+  display: none;
+}
+
+.projectList {
+  margin: 0;
+  padding: 0;
+}
+
+.para {
+  max-width: 58ch;
+  margin-bottom: 0.9em;
+}
+
+.facts {
+  display: grid;
+  gap: 0.6em;
+  margin-top: 1.4em;
+}
+
+.groups {
+  display: grid;
+  gap: 1.1em;
+  margin-top: 1em;
+  padding: 0;
+}
+
+.skillNote {
+  max-width: 44ch;
+}
+
+.footer {
+  margin-top: 3rem;
+}
+
+/* ---- WebGL experience: tall scroll tracks with a pinned HUD screen ------ */
+:global(.webgl-on) .main,
+:global(.webgl-on) .track {
+  padding: 0;
+  /* Let the canvas underneath receive pointer input; interactive HUD
+     elements opt back in below. */
+  pointer-events: none;
+}
+:global(.webgl-on) .screen {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+:global(.webgl-on) .screen a,
+:global(.webgl-on) .screen button,
+:global(.webgl-on) .screen [data-interactive] {
+  pointer-events: auto;
+}
+
+:global(.webgl-on) .intro {
+  height: 440svh;
+}
+:global(.webgl-on) .work {
+  height: calc((var(--count) + 1.8) * 100svh);
+}
+:global(.webgl-on) .about {
+  height: 400svh;
+}
+:global(.webgl-on) .contact {
+  height: 280svh;
+}
+
+/* Intro HUD — mirrors the reference's corner composition. */
+:global(.webgl-on) .intro .screen {
+  display: block;
+  min-height: 0;
+}
+:global(.webgl-on) .introMeta {
+  position: absolute;
+  left: var(--hud-pad);
+  top: calc(var(--hud-pad) + 46px);
+}
+:global(.webgl-on) .brief {
+  position: absolute;
+  right: var(--hud-pad);
+  top: var(--hud-pad);
+  text-align: right;
+  width: min(250px, 42vw);
+}
+:global(.webgl-on) .brief p {
+  max-width: none;
+}
+:global(.webgl-on) .scrollHint {
+  display: block;
+  position: absolute;
+  left: var(--hud-pad);
+  bottom: calc(var(--hud-pad) + 40px);
+  white-space: pre-line;
+}
+:global(.webgl-on) .status {
+  display: block;
+  position: absolute;
+  right: var(--hud-pad);
+  bottom: calc(var(--hud-pad) + 40px);
+  text-align: right;
+  width: min(250px, 42vw);
+}
+
+/* Work. */
+:global(.webgl-on) .workHead {
+  position: absolute;
+  left: var(--hud-pad);
+  top: calc(var(--hud-pad) + 46px);
+}
+
+/* About + stack: two columns framing the rings. */
+:global(.webgl-on) .aboutText {
+  position: absolute;
+  left: var(--hud-pad);
+  top: calc(var(--hud-pad) + 46px);
+  width: min(380px, 40vw);
+}
+:global(.webgl-on) .para {
+  max-width: none;
+}
+:global(.webgl-on) .skills {
+  position: absolute;
+  right: var(--hud-pad);
+  top: calc(var(--hud-pad) + 46px);
+  width: min(360px, 38vw);
+  text-align: right;
+}
+:global(.webgl-on) .skillNote {
+  margin-left: auto;
+}
+
+:global(.webgl-on) .column {
+  transition: opacity 0.6s var(--ease-out-expo);
+  text-shadow:
+    0 0 10px rgb(10 3 3 / 0.95),
+    0 0 22px rgb(10 3 3 / 0.7);
+}
+:global(.webgl-on) .column[data-on="false"] {
+  opacity: 0;
+}
+:global(.webgl-on) .column[data-on="false"] * {
+  pointer-events: none !important;
+}
+
+/* Contact. */
+:global(.webgl-on) .contactHead {
+  position: absolute;
+  left: var(--hud-pad);
+  top: calc(var(--hud-pad) + 46px);
+}
+:global(.webgl-on) .footer {
+  position: absolute;
+  left: var(--hud-pad);
+  bottom: calc(var(--hud-pad) + 30px);
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  :global(.webgl-on) .brief {
+    top: auto;
+    bottom: calc(var(--hud-pad) + 96px);
+    left: var(--hud-pad);
+    right: auto;
+    text-align: left;
+    width: min(300px, 80vw);
+  }
+  :global(.webgl-on) .status {
+    display: none;
+  }
+  :global(.webgl-on) .aboutText {
+    width: auto;
+    right: var(--hud-pad);
+  }
+  :global(.webgl-on) .skills {
+    left: var(--hud-pad);
+    width: auto;
+    text-align: left;
+  }
+  :global(.webgl-on) .skillNote {
+    display: none;
+  }
+  :global(.webgl-on) .footer {
+    display: none;
+  }
+}

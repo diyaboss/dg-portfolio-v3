@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Design tokens — Diya's existing identity (#0A0303 / #D41C1C / #F2ECE9 and
+   the secondary reds and mauves from dg-theta-ten), mapped onto the
+   reference's material language: fog, frosted light, emissive seams.
+   ------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0a0303;
+  --color-ink-2: #140707;
+  --color-ink-3: #1d0b0c;
+  --color-ember: #d41c1c;
+  --color-ember-hot: #ff4a3d;
+  --color-crimson: #b51d35;
+  --color-wine: #8b1027;
+  --color-plum: #311c27;
+  --color-mauve: #d3b8d3;
+  --color-bone: #f2ece9;
+  --color-bone-dim: #cbbfba;
+  --color-ash: #8f7f7c;
+  --color-fog: #2a1214;
+
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: var(--font-unbounded), var(--font-plex-mono), sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --hud-pad: clamp(16px, 3.3vw, 52px);
+  --hud-size: 12.5px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  -webkit-text-size-adjust: 100%;
+  scrollbar-width: none;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: var(--hud-size);
+  line-height: 1.45;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body[data-locked] {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-ember);
+  color: var(--color-bone);
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-bone);
+  outline-offset: 4px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Without JavaScript the decode effect cannot run: show the real text. */
+.no-js [data-decode] .sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: inherit;
+}
+
+/* ---------------------------------------------------------------------------
+   HUD primitives
+   ------------------------------------------------------------------------- */
+.hud-text {
+  font-family: var(--font-mono);
+  font-size: var(--hud-size);
+  letter-spacing: 0.01em;
+  color: var(--color-bone);
+  text-shadow: 0 0 14px rgb(242 236 233 / 0.25);
+}
+
+.hud-dim {
+  color: var(--color-bone-dim);
+}
+
+.decode-glyphs {
+  white-space: pre-wrap;
+}
+
+.bracket {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85em 1.6em;
+}
+.bracket::before,
+.bracket::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: inset 0.45s var(--ease-out-expo);
+  opacity: 0.9;
+}
+/* Corner brackets: top corners on ::before, bottom corners on ::after. */
+.bracket::before {
+  background:
+    linear-gradient(currentColor, currentColor) left top / 9px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) left top / 1.5px 9px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 9px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 1.5px 9px no-repeat;
+}
+.bracket::after {
+  background:
+    linear-gradient(currentColor, currentColor) left bottom / 9px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 1.5px 9px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 9px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 1.5px 9px no-repeat;
+}
+.bracket:hover::before,
+.bracket:hover::after,
+.bracket:focus-visible::before,
+.bracket:focus-visible::after {
+  inset: -4px -6px;
+}
+.bracket:focus-visible {
+  outline: none;
+}
+
+.fade-reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.6s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+}
+[data-on="true"] > .fade-reveal,
+.fade-reveal[data-on="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --hud-size: 11.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
